@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Book and User Management',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.brown,
         scaffoldBackgroundColor: Colors.white,
@@ -26,6 +27,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+        centerTitle: true,
       ),
       body: Center(
         child: Column(
@@ -81,104 +83,172 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new book'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: Text('Add New Book'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: getImage,
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  color: Colors.brown[200],
-                  child: _image == null
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add, color: Colors.white, size: 40),
-                              Text(
-                                'upload book cover',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
+            Center(
+              child: GestureDetector(
+                onTap: getImage,
+                child: SizedBox(
+                  width: 150,
+                  height: 200,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.brown[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _image == null
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add, color: Colors.white, size: 24),
+                                Text(
+                                  'Upload Cover',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(_image!, fit: BoxFit.cover),
                           ),
-                        )
-                      : Image.file(_image!, fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 16),
-            TextField(decoration: InputDecoration(labelText: 'Title')),
-            TextField(decoration: InputDecoration(labelText: 'Author')),
+
+            // Title Field
+            Text(
+              'Title',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
             TextField(
-              decoration: InputDecoration(labelText: 'Description'),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            // Author Field
+            Text(
+              'Author',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            // Description Field
+            Text(
+              'Description',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
               maxLines: 3,
             ),
-            TextField(decoration: InputDecoration(labelText: 'ISBN (option)')),
             SizedBox(height: 16),
+
+            // ISBN Field
+            Text(
+              'ISBN (option)',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            // Category Field
+            Text(
+              'Category',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              items: ['Fiction', 'Non-fiction', 'Science', 'History']
+                  .map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (_) {},
+            ),
+            SizedBox(height: 16),
+
+            // Qty Field
+            Text(
+              'Qty',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
             Row(
               children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(labelText: 'Category'),
-                    items: ['Fiction', 'Non-fiction', 'Science', 'History']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (_) {},
-                  ),
+                IconButton(
+                  icon: Icon(Icons.remove),
+                  onPressed: () {
+                    setState(() {
+                      if (quantity > 0) quantity--;
+                    });
+                  },
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('qty'),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.remove),
-                            onPressed: () {
-                              setState(() {
-                                if (quantity > 0) quantity--;
-                              });
-                            },
-                          ),
-                          Text('$quantity'),
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                quantity++;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                Text('$quantity'),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    setState(() {
+                      quantity++;
+                    });
+                  },
                 ),
               ],
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Implement book addition logic
-              },
-              child: Text('Confirm'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16),
+
+            // Confirm Button
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO: Implement book addition logic
+                },
+                child: Text(
+                  'Confirm',
+                  style:
+                      TextStyle(color: Colors.white), // Set text color to white
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown[200], // Set button color
+                  padding: EdgeInsets.symmetric(
+                      vertical: 16, horizontal: 32), // Adjusted padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        12), // Rounded corners // Rounded corners
+                  ),
+                ),
               ),
             ),
           ],
@@ -196,6 +266,10 @@ class AddNewUserPage extends StatefulWidget {
 class _AddNewUserPageState extends State<AddNewUserPage> {
   File? _image;
   final picker = ImagePicker();
+  final TextEditingController _realNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
 
   Future getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -211,59 +285,137 @@ class _AddNewUserPageState extends State<AddNewUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new user'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: Text('Add New User'),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            GestureDetector(
-              onTap: getImage,
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  color: Colors.brown[200],
-                  child: _image == null
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add, color: Colors.white, size: 40),
-                              Text(
-                                'upload profile picture',
-                                style: TextStyle(color: Colors.white),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Upload Field
+              Center(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: getImage,
+                      child: Container(
+                        width: 150, // Adjust the width
+                        height: 200, // Adjust the height
+                        decoration: BoxDecoration(
+                          color: Colors.brown[200],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: _image == null
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.add,
+                                        color: Colors.white, size: 24),
+                                    Text(
+                                      'Upload',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ],
-                          ),
-                        )
-                      : Image.file(_image!, fit: BoxFit.cover),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(decoration: InputDecoration(labelText: 'User real-name')),
-            TextField(decoration: InputDecoration(labelText: 'Email')),
-            TextField(
-              decoration: InputDecoration(labelText: 'Address'),
-              maxLines: 3,
-            ),
-            TextField(decoration: InputDecoration(labelText: 'Age')),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Implement user addition logic
-              },
-              child: Text('Confirm'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              SizedBox(height: 16),
+
+              // Real Name Field
+              Text(
+                'User Real Name',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+              TextField(
+                controller: _realNameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Email Field
+              Text(
+                'Email',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Address Field
+              Text(
+                'Address',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                controller: _addressController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+              SizedBox(height: 16),
+
+              // Age Field
+              Text(
+                'Age',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                controller: _ageController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Confirm Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: Implement user addition logic
+                  },
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(
+                        color: Colors.white), // Set text color to white
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.brown[200], // Set button color
+                    padding: EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 32), // Adjusted padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          12), // Rounded corners // Rounded corners
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
